@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_LINKS } from "@/lib/data";
 
@@ -13,17 +14,23 @@ export function Navbar() {
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener("scroll", onScroll, { passive: true });
+
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    const onResize = () => { if (window.innerWidth >= 769) setOpen(false); };
+    const onResize = () => {
+      if (window.innerWidth >= 769) setOpen(false);
+    };
+
     window.addEventListener("resize", onResize);
+
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // Close drawer when route changes
-  useEffect(() => { setOpen(false); }, [pathname]);
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -34,15 +41,18 @@ export function Navbar() {
         position: "sticky",
         top: 0,
         zIndex: 200,
-        background: scrolled ? "rgba(255,255,255,0.97)" : "rgba(255,255,255,0.92)",
+        background: scrolled
+          ? "rgba(255,255,255,0.97)"
+          : "rgba(255,255,255,0.92)",
         backdropFilter: "blur(14px)",
         WebkitBackdropFilter: "blur(14px)",
-        borderBottom: `0.5px solid ${scrolled ? "#e5e5e0" : "transparent"}`,
+        borderBottom: `0.5px solid ${
+          scrolled ? "#e5e5e0" : "transparent"
+        }`,
         transition: "border-color 0.2s, background 0.2s",
         fontFamily: "'Inter', sans-serif",
       }}
     >
-      {/* ── Desktop + tablet bar ── */}
       <div
         style={{
           maxWidth: 1100,
@@ -56,7 +66,7 @@ export function Navbar() {
         }}
       >
         {/* Logo */}
-        <a
+        <Link
           href="/"
           style={{
             fontSize: 17,
@@ -68,17 +78,24 @@ export function Navbar() {
           }}
         >
           ExpenseWise
-        </a>
+        </Link>
 
-        {/* Desktop nav — hidden below 769px via CSS class */}
+        {/* Desktop Navigation */}
         <nav
           className="hide-mobile"
-          style={{ display: "flex", alignItems: "center", gap: 2, flex: 1, justifyContent: "center" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
+            flex: 1,
+            justifyContent: "center",
+          }}
         >
           {NAV_LINKS.map((link) => {
             const active = isActive(link.href);
+
             return (
-              <a
+              <Link
                 key={link.label}
                 href={link.href}
                 style={{
@@ -95,27 +112,34 @@ export function Navbar() {
                 }}
                 onMouseEnter={(e) => {
                   if (!active) {
-                    (e.currentTarget as HTMLElement).style.background = "#f7f7f5";
-                    (e.currentTarget as HTMLElement).style.color = "#0a0a0a";
+                    e.currentTarget.style.background = "#f7f7f5";
+                    e.currentTarget.style.color = "#0a0a0a";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!active) {
-                    (e.currentTarget as HTMLElement).style.background = "transparent";
-                    (e.currentTarget as HTMLElement).style.color = "#555550";
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color = "#555550";
                   }
                 }}
               >
                 {link.label}
-              </a>
+              </Link>
             );
           })}
         </nav>
 
-        {/* Right — Login + hamburger */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-          <a
-            href="http://localhost:3000/sign-in?redirect_url=http%3A%2F%2Flocalhost%3A3000%2F"
+        {/* Right Section */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            flexShrink: 0,
+          }}
+        >
+          <Link
+            href="/sign-in"
             style={{
               padding: "7px 16px",
               background: "#0a0a0a",
@@ -129,9 +153,9 @@ export function Navbar() {
             }}
           >
             Log in
-          </a>
+          </Link>
 
-          {/* Hamburger — mobile only */}
+          {/* Mobile Hamburger */}
           <button
             onClick={() => setOpen((o) => !o)}
             aria-label={open ? "Close menu" : "Open menu"}
@@ -150,15 +174,18 @@ export function Navbar() {
               cursor: "pointer",
               color: "#0a0a0a",
               flexShrink: 0,
-              transition: "border-color 0.15s",
             }}
           >
-            {open ? <X size={18} strokeWidth={2} /> : <Menu size={18} strokeWidth={2} />}
+            {open ? (
+              <X size={18} strokeWidth={2} />
+            ) : (
+              <Menu size={18} strokeWidth={2} />
+            )}
           </button>
         </div>
       </div>
 
-      {/* ── Mobile drawer ── */}
+      {/* Mobile Drawer */}
       <div
         id="mobile-nav"
         className="show-mobile"
@@ -166,7 +193,7 @@ export function Navbar() {
         style={{
           maxHeight: open ? 480 : 0,
           overflow: "hidden",
-          transition: "max-height 0.3s cubic-bezier(0.4,0,0.2,1)",
+          transition: "max-height 0.3s ease",
           borderTop: open ? "0.5px solid #e5e5e0" : "none",
           background: "#fff",
         }}
@@ -181,8 +208,9 @@ export function Navbar() {
         >
           {NAV_LINKS.map((link) => {
             const active = isActive(link.href);
+
             return (
-              <a
+              <Link
                 key={link.label}
                 href={link.href}
                 style={{
@@ -200,6 +228,7 @@ export function Navbar() {
                 }}
               >
                 {link.label}
+
                 {active && (
                   <span
                     style={{
@@ -210,11 +239,10 @@ export function Navbar() {
                     }}
                   />
                 )}
-              </a>
+              </Link>
             );
           })}
 
-          {/* Login in drawer */}
           <div
             style={{
               marginTop: 10,
@@ -222,8 +250,8 @@ export function Navbar() {
               borderTop: "0.5px solid #e5e5e0",
             }}
           >
-            <a
-              href="/login"
+            <Link
+              href="/sign-in"
               style={{
                 display: "block",
                 textAlign: "center",
@@ -238,7 +266,7 @@ export function Navbar() {
               }}
             >
               Log in
-            </a>
+            </Link>
           </div>
         </nav>
       </div>

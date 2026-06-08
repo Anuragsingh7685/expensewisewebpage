@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, TrendingDown, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { useState, useEffect } from "react";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 
