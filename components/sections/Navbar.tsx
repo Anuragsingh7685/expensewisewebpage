@@ -139,7 +139,7 @@ export function Navbar() {
           }}
         >
           <Link
-            href="/sign-in"
+            href="https://app-expensewise.netlify.app/sign-in?redirect_url=https%3A%2F%2Fapp-expensewise.netlify.app%2F%3F__clerk_netlify_cache_bust%3D1780983918476"
             style={{
               padding: "7px 16px",
               background: "#0a0a0a",
